@@ -23,15 +23,6 @@ class ThreeJSComponent extends Component {
     return ThreeJSComponent.CLASS_NAME;
   }
 
-  InitEntity() {
-    this.initScene();
-    this.initShadowMapViewers();
-    this.initMisc();
-
-    document.body.appendChild(this.renderer.domElement);
-    //window.addEventListener("resize", onWindowResize);
-  }
-
   initScene() {
     this.camera = new THREE.PerspectiveCamera(
       45,
@@ -93,13 +84,6 @@ class ThreeJSComponent extends Component {
     this.torusKnot.receiveShadow = true;
     this.scene.add(this.torusKnot);
 
-    geometry = new THREE.BoxGeometry(3, 3, 3);
-    this.cube = new THREE.Mesh(geometry, material);
-    this.cube.position.set(8, 3, 8);
-    this.cube.castShadow = true;
-    this.cube.receiveShadow = true;
-    this.scene.add(this.cube);
-
     geometry = new THREE.BoxGeometry(10, 0.15, 10);
     material = new THREE.MeshPhongMaterial({
       color: 0xa0adaf,
@@ -117,7 +101,7 @@ class ThreeJSComponent extends Component {
   initShadowMapViewers() {
     this.dirLightShadowMapViewer = new ShadowMapViewer(this.dirLight);
     this.spotLightShadowMapViewer = new ShadowMapViewer(this.spotLight);
-    //resizeShadowMapViewers();
+    this.resizeShadowMapViewers();
   }
 
   initMisc() {
@@ -136,6 +120,15 @@ class ThreeJSComponent extends Component {
 
     this.stats = new Stats();
     document.body.appendChild(this.stats.dom);
+  }
+
+  InitEntity() {
+    this.initScene();
+    this.initShadowMapViewers();
+    this.initMisc();
+
+    document.body.appendChild(this.renderer.domElement);
+    window.addEventListener("resize", this.onWindowResize);
   }
 
   resizeShadowMapViewers() {
@@ -168,7 +161,10 @@ class ThreeJSComponent extends Component {
     this.dirLightShadowMapViewer.render(this.renderer);
     this.spotLightShadowMapViewer.render(this.renderer);
     this.stats.update();
+
+    // geometry
     this.torusKnot.rotation.x += 0.01;
+    this.torusKnot.rotation.y += 0.01;
   }
 }
 

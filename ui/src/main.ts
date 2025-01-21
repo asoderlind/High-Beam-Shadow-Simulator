@@ -1,6 +1,7 @@
 import { EntityManager } from "./ComponentSystem/EntityManager";
 import { Entity } from "./ComponentSystem/Entity";
 import ThreeJSComponent from "./Components/ThreeJSComponent";
+import BoxComponent from "./Components/BoxComponent";
 
 // This guy is global and will be connected to ALL entities
 const entityManager = EntityManager.Init();
@@ -19,6 +20,9 @@ const render = () => {
 };
 
 function main() {
+  const objectsEntity = new Entity("objectsEntity");
+  objectsEntity.AddComponent(new BoxComponent());
+  objectsEntity.Init();
   render();
 }
 
