@@ -19,7 +19,7 @@ class BoxComponent extends Component {
     const geometry = new THREE.BoxGeometry(3, 3, 3);
     const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
     this.mesh = new THREE.Mesh(geometry, material);
-    this.mesh.position.set(9, 3, 8);
+    this.mesh.position.set(0.32, 3, -0.5);
     this.mesh.castShadow = true;
     this.mesh.receiveShadow = true;
     scene.add(this.mesh);

@@ -13,17 +13,23 @@ class ThreeJSComponent extends Component {
   stats!: Stats;
 
   dirLight!: THREE.DirectionalLight;
-  spotLight!: THREE.SpotLight;
+
+  headlightL!: THREE.SpotLight;
+  headLightR!: THREE.SpotLight;
+
   torusKnot!: THREE.Mesh;
   cube!: THREE.Mesh;
   dirLightShadowMapViewer!: ShadowMapViewer;
-  spotLightShadowMapViewer!: ShadowMapViewer;
+
+  headlightLShadowMapViewer!: ShadowMapViewer;
+  headLightRShadowMapViewer!: ShadowMapViewer;
 
   get NAME() {
     return ThreeJSComponent.CLASS_NAME;
   }
 
-  initScene() {
+  constructor() {
+    super();
     this.camera = new THREE.PerspectiveCamera(
       45,
       window.innerWidth / window.innerHeight,
@@ -31,26 +37,40 @@ class ThreeJSComponent extends Component {
       1000
     );
     this.camera.position.set(0, 15, 35);
+  }
 
+  initScene() {
     this.scene = new THREE.Scene();
 
     // Lights
-
     this.scene.add(new THREE.AmbientLight(0x404040, 3));
 
-    this.spotLight = new THREE.SpotLight(0xffffff, 500);
-    this.spotLight.name = "Spot Light";
-    this.spotLight.angle = Math.PI / 5;
-    this.spotLight.penumbra = 0.3;
-    this.spotLight.position.set(10, 10, 5);
-    this.spotLight.castShadow = true;
-    this.spotLight.shadow.camera.near = 8;
-    this.spotLight.shadow.camera.far = 30;
-    this.spotLight.shadow.mapSize.width = 1024;
-    this.spotLight.shadow.mapSize.height = 1024;
-    this.scene.add(this.spotLight);
+    this.headlightL = new THREE.SpotLight(0xffffff, 500);
+    this.headlightL.name = "Headlight L";
+    this.headlightL.angle = Math.PI / 5;
+    this.headlightL.penumbra = 0.3;
+    this.headlightL.position.set(10, 5, 5);
+    this.headlightL.castShadow = true;
+    this.headlightL.shadow.camera.near = 6;
+    this.headlightL.shadow.camera.far = 30;
+    this.headlightL.shadow.mapSize.width = 1024;
+    this.headlightL.shadow.mapSize.height = 1024;
+    this.scene.add(this.headlightL);
 
-    this.scene.add(new THREE.CameraHelper(this.spotLight.shadow.camera));
+    this.headLightR = new THREE.SpotLight(0xffffff, 500);
+    this.headLightR.name = "Headlight R";
+    this.headLightR.angle = Math.PI / 5;
+    this.headLightR.penumbra = 0.3;
+    this.headLightR.position.set(-10, 5, 5);
+    this.headLightR.castShadow = true;
+    this.headLightR.shadow.camera.near = 6;
+    this.headLightR.shadow.camera.far = 30;
+    this.headLightR.shadow.mapSize.width = 1024;
+    this.headLightR.shadow.mapSize.height = 1024;
+    this.scene.add(this.headLightR);
+
+    this.scene.add(new THREE.CameraHelper(this.headlightL.shadow.camera));
+    this.scene.add(new THREE.CameraHelper(this.headLightR.shadow.camera));
 
     this.dirLight = new THREE.DirectionalLight(0xffffff, 3);
     this.dirLight.name = "Dir. Light";
@@ -66,26 +86,10 @@ class ThreeJSComponent extends Component {
     this.dirLight.shadow.mapSize.height = 1024;
     this.scene.add(this.dirLight);
 
-    this.scene.add(new THREE.CameraHelper(this.dirLight.shadow.camera));
+    //this.scene.add(new THREE.CameraHelper(this.dirLight.shadow.camera));
 
-    // Geometry
-    let geometry: THREE.TorusKnotGeometry | THREE.BoxGeometry;
-    geometry = new THREE.TorusKnotGeometry(25, 8, 75, 20);
-    let material = new THREE.MeshPhongMaterial({
-      color: 0xff0000,
-      shininess: 150,
-      specular: 0x222222,
-    });
-
-    this.torusKnot = new THREE.Mesh(geometry, material);
-    this.torusKnot.scale.multiplyScalar(1 / 18);
-    this.torusKnot.position.y = 3;
-    this.torusKnot.castShadow = true;
-    this.torusKnot.receiveShadow = true;
-    this.scene.add(this.torusKnot);
-
-    geometry = new THREE.BoxGeometry(10, 0.15, 10);
-    material = new THREE.MeshPhongMaterial({
+    const geometry = new THREE.BoxGeometry(10, 0.15, 10);
+    const material = new THREE.MeshPhongMaterial({
       color: 0xa0adaf,
       shininess: 150,
       specular: 0x111111,
@@ -99,8 +103,9 @@ class ThreeJSComponent extends Component {
   }
 
   initShadowMapViewers() {
-    this.dirLightShadowMapViewer = new ShadowMapViewer(this.dirLight);
-    this.spotLightShadowMapViewer = new ShadowMapViewer(this.spotLight);
+    //this.dirLightShadowMapViewer = new ShadowMapViewer(this.dirLight);
+    this.headlightLShadowMapViewer = new ShadowMapViewer(this.headlightL);
+    this.headLightRShadowMapViewer = new ShadowMapViewer(this.headLightR);
     this.resizeShadowMapViewers();
   }
 
@@ -117,7 +122,6 @@ class ThreeJSComponent extends Component {
     controls.update();
 
     this.clock = new THREE.Clock();
-
     this.stats = new Stats();
     document.body.appendChild(this.stats.dom);
   }
@@ -134,15 +138,19 @@ class ThreeJSComponent extends Component {
   resizeShadowMapViewers() {
     const size = window.innerWidth * 0.15;
 
-    this.dirLightShadowMapViewer.position.x = 10;
-    this.dirLightShadowMapViewer.position.y = 10;
-    this.dirLightShadowMapViewer.size.width = size;
-    this.dirLightShadowMapViewer.size.height = size;
-    this.dirLightShadowMapViewer.update(); //Required when setting position or size directly
+    //this.dirLightShadowMapViewer.position.x = 10;
+    //this.dirLightShadowMapViewer.position.y = 10;
+    //this.dirLightShadowMapViewer.size.width = size;
+    //this.dirLightShadowMapViewer.size.height = size;
+    //this.dirLightShadowMapViewer.update(); //Required when setting position or size directly
 
-    this.spotLightShadowMapViewer.size.set(size, size);
-    this.spotLightShadowMapViewer.position.set(size + 20, 10);
-    // spotLightShadowMapViewer.update();	//NOT required because .set updates automatically
+    this.headlightLShadowMapViewer.size.set(size, size);
+    this.headlightLShadowMapViewer.position.set(size + 20, 10);
+
+    this.headLightRShadowMapViewer.size.set(size, size);
+    this.headLightRShadowMapViewer.position.set(size * 2 + 30, 10);
+
+    // headlightLShadowMapViewer.update();	//NOT required because .set updates automatically
   }
 
   onWindowResize() {
@@ -152,19 +160,17 @@ class ThreeJSComponent extends Component {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
 
     this.resizeShadowMapViewers();
-    this.dirLightShadowMapViewer.updateForWindowResize();
-    this.spotLightShadowMapViewer.updateForWindowResize();
+    //this.dirLightShadowMapViewer.updateForWindowResize();
+    this.headlightLShadowMapViewer.updateForWindowResize();
+    this.headLightRShadowMapViewer.updateForWindowResize();
   }
 
   Update() {
     this.renderer.render(this.scene, this.camera);
-    this.dirLightShadowMapViewer.render(this.renderer);
-    this.spotLightShadowMapViewer.render(this.renderer);
+    //this.dirLightShadowMapViewer.render(this.renderer);
+    this.headlightLShadowMapViewer.render(this.renderer);
+    this.headLightRShadowMapViewer.render(this.renderer);
     this.stats.update();
-
-    // geometry
-    this.torusKnot.rotation.x += 0.01;
-    this.torusKnot.rotation.y += 0.01;
   }
 }
 
