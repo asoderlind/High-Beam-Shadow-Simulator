@@ -15,7 +15,7 @@ class GuiComponent extends Component {
     const threejs = this.FindEntity("threeJSEntity").GetComponent(
       "ThreeJSComponent"
     ) as ThreeJSComponent;
-    const box = this.FindEntity("objectsEntity").GetComponent(
+    const box = this.FindEntity("objectsEntity")?.GetComponent(
       "BoxComponent"
     ) as BoxComponent;
 
@@ -33,11 +33,13 @@ class GuiComponent extends Component {
     lightFolder.add(threejs.spotLight.position, "z", -20, 20);
     */
 
-    const boxFolder = this.gui.addFolder("Box");
-    boxFolder.open();
-    boxFolder.add(box.mesh.position, "x", -20, 20);
-    boxFolder.add(box.mesh.position, "y", -20, 20);
-    boxFolder.add(box.mesh.position, "z", -20, 20);
+    if (box) {
+      const boxFolder = this.gui.addFolder("Box");
+      boxFolder.open();
+      boxFolder.add(box.mesh.position, "x", -20, 20);
+      boxFolder.add(box.mesh.position, "y", -20, 20);
+      boxFolder.add(box.mesh.position, "z", -20, 20);
+    }
   }
 
   Update() {}

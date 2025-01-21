@@ -43,13 +43,11 @@ class ThreeJSComponent extends Component {
     this.scene = new THREE.Scene();
 
     // Lights
-    this.scene.add(new THREE.AmbientLight(0x404040, 3));
-
     this.headlightL = new THREE.SpotLight(0xffffff, 500);
     this.headlightL.name = "Headlight L";
     this.headlightL.angle = Math.PI / 5;
     this.headlightL.penumbra = 0.3;
-    this.headlightL.position.set(10, 5, 5);
+    this.headlightL.position.set(-4, 5, 15);
     this.headlightL.castShadow = true;
     this.headlightL.shadow.camera.near = 6;
     this.headlightL.shadow.camera.far = 30;
@@ -61,7 +59,7 @@ class ThreeJSComponent extends Component {
     this.headLightR.name = "Headlight R";
     this.headLightR.angle = Math.PI / 5;
     this.headLightR.penumbra = 0.3;
-    this.headLightR.position.set(-10, 5, 5);
+    this.headLightR.position.set(5, 5, 15);
     this.headLightR.castShadow = true;
     this.headLightR.shadow.camera.near = 6;
     this.headLightR.shadow.camera.far = 30;
@@ -72,7 +70,7 @@ class ThreeJSComponent extends Component {
     this.scene.add(new THREE.CameraHelper(this.headlightL.shadow.camera));
     this.scene.add(new THREE.CameraHelper(this.headLightR.shadow.camera));
 
-    this.dirLight = new THREE.DirectionalLight(0xffffff, 3);
+    this.dirLight = new THREE.DirectionalLight(0xffffff, 0);
     this.dirLight.name = "Dir. Light";
     this.dirLight.position.set(0, 10, 0);
     this.dirLight.castShadow = true;
@@ -86,14 +84,28 @@ class ThreeJSComponent extends Component {
     this.dirLight.shadow.mapSize.height = 1024;
     this.scene.add(this.dirLight);
 
-    //this.scene.add(new THREE.CameraHelper(this.dirLight.shadow.camera));
-
     const geometry = new THREE.BoxGeometry(10, 0.15, 10);
     const material = new THREE.MeshPhongMaterial({
       color: 0xa0adaf,
       shininess: 150,
       specular: 0x111111,
     });
+
+    const flatBlockR = new THREE.Mesh(geometry, material);
+    flatBlockR.position.set(3, 3, 7);
+    flatBlockR.setRotationFromEuler(new THREE.Euler(-Math.PI / 2, 0, 0));
+    flatBlockR.scale.multiplyScalar(0.1);
+    flatBlockR.receiveShadow = true;
+    flatBlockR.castShadow = true;
+    this.scene.add(flatBlockR);
+
+    const flatBlockL = new THREE.Mesh(geometry, material);
+    flatBlockL.position.set(-3, 3, 7);
+    flatBlockL.setRotationFromEuler(new THREE.Euler(-Math.PI / 2, 0, 0));
+    flatBlockL.scale.multiplyScalar(0.1);
+    flatBlockL.receiveShadow = true;
+    flatBlockL.castShadow = true;
+    this.scene.add(flatBlockL);
 
     const ground = new THREE.Mesh(geometry, material);
     ground.scale.multiplyScalar(3);
@@ -103,7 +115,6 @@ class ThreeJSComponent extends Component {
   }
 
   initShadowMapViewers() {
-    //this.dirLightShadowMapViewer = new ShadowMapViewer(this.dirLight);
     this.headlightLShadowMapViewer = new ShadowMapViewer(this.headlightL);
     this.headLightRShadowMapViewer = new ShadowMapViewer(this.headLightR);
     this.resizeShadowMapViewers();
@@ -138,12 +149,6 @@ class ThreeJSComponent extends Component {
   resizeShadowMapViewers() {
     const size = window.innerWidth * 0.15;
 
-    //this.dirLightShadowMapViewer.position.x = 10;
-    //this.dirLightShadowMapViewer.position.y = 10;
-    //this.dirLightShadowMapViewer.size.width = size;
-    //this.dirLightShadowMapViewer.size.height = size;
-    //this.dirLightShadowMapViewer.update(); //Required when setting position or size directly
-
     this.headlightLShadowMapViewer.size.set(size, size);
     this.headlightLShadowMapViewer.position.set(size + 20, 10);
 
@@ -160,14 +165,12 @@ class ThreeJSComponent extends Component {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
 
     this.resizeShadowMapViewers();
-    //this.dirLightShadowMapViewer.updateForWindowResize();
     this.headlightLShadowMapViewer.updateForWindowResize();
     this.headLightRShadowMapViewer.updateForWindowResize();
   }
 
   Update() {
     this.renderer.render(this.scene, this.camera);
-    //this.dirLightShadowMapViewer.render(this.renderer);
     this.headlightLShadowMapViewer.render(this.renderer);
     this.headLightRShadowMapViewer.render(this.renderer);
     this.stats.update();

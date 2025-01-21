@@ -21,9 +21,11 @@ const render = () => {
 };
 
 function main() {
+  /*
   const objectsEntity = new Entity("objectsEntity");
   objectsEntity.AddComponent(new BoxComponent());
   objectsEntity.Init();
+  */
 
   const lightsEntity = new Entity("lightsEntity");
   lightsEntity.Init();
