@@ -3,6 +3,8 @@ import { Entity } from "./ComponentSystem/Entity";
 import ThreeJSComponent from "./Components/ThreeJSComponent";
 import BoxComponent from "./Components/BoxComponent";
 import GuiComponent from "./Components/GuiComponent";
+import GroundComponent from "./Components/GroundComponent";
+import HeadlightsComponent from "./Components/HeadlightsComponent";
 
 // This guy is global and will be connected to ALL entities
 const entityManager = EntityManager.Init();
@@ -21,11 +23,17 @@ const render = () => {
 };
 
 function main() {
-  /*
-  const objectsEntity = new Entity("objectsEntity");
-  objectsEntity.AddComponent(new BoxComponent());
-  objectsEntity.Init();
-  */
+  //const objectsEntity = new Entity("objectsEntity");
+  //objectsEntity.AddComponent(new BoxComponent());
+  //objectsEntity.Init();
+
+  const headlightsEntity = new Entity("headlightsEntity");
+  headlightsEntity.AddComponent(new HeadlightsComponent());
+  headlightsEntity.Init();
+
+  const groundEntity = new Entity("groundEntity");
+  groundEntity.AddComponent(new GroundComponent());
+  groundEntity.Init();
 
   const lightsEntity = new Entity("lightsEntity");
   lightsEntity.Init();
