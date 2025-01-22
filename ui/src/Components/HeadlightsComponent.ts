@@ -10,10 +10,13 @@ class HeadlightsComponent extends Component {
   headlightR!: THREE.SpotLight;
   headlightLShadowMapViewer!: ShadowMapViewer;
   headLightRShadowMapViewer!: ShadowMapViewer;
+  cameraHelperL!: THREE.CameraHelper;
+  cameraHelperR!: THREE.CameraHelper;
   flatBlockL!: THREE.Mesh;
   flatBlockR!: THREE.Mesh;
   renderer!: THREE.WebGLRenderer;
-  near = 6;
+  near = 4.2;
+  far = 100;
 
   get NAME() {
     return HeadlightsComponent.CLASS_NAME;
@@ -67,6 +70,7 @@ class HeadlightsComponent extends Component {
       "ThreeJSComponent"
     ) as ThreeJSComponent;
 
+    const camera = threejs.camera;
     const scene = threejs.scene;
     const renderer = threejs.renderer;
     this.renderer = renderer;
@@ -76,13 +80,13 @@ class HeadlightsComponent extends Component {
     this.headlightL.name = "Headlight L";
     this.headlightL.angle = Math.PI / 5;
     this.headlightL.penumbra = 0.3;
-    this.headlightL.position.set(-3, 2, 15);
+    this.headlightL.position.set(-2, 2, 15);
     this.headlightL.castShadow = true;
     this.headlightL.shadow.camera.near = this.near;
-    this.headlightL.shadow.camera.far = 30;
+    this.headlightL.shadow.camera.far = this.far;
     this.headlightL.shadow.mapSize.width = 1024;
     this.headlightL.shadow.mapSize.height = 1024;
-    this.headlightL.target.position.set(0, 0, 0);
+    this.headlightL.target.position.set(-2, 2, 0);
     scene.add(this.headlightL);
     scene.add(this.headlightL.target);
 
@@ -91,17 +95,20 @@ class HeadlightsComponent extends Component {
     this.headlightR.name = "Headlight R";
     this.headlightR.angle = Math.PI / 5;
     this.headlightR.penumbra = 0.3;
-    this.headlightR.position.set(3, 2, 15);
+    this.headlightR.position.set(2, 2, 15);
     this.headlightR.castShadow = true;
     this.headlightR.shadow.camera.near = this.near;
-    this.headlightR.shadow.camera.far = 30;
+    this.headlightR.shadow.camera.far = this.far;
     this.headlightR.shadow.mapSize.width = 1024;
     this.headlightR.shadow.mapSize.height = 1024;
+    this.headlightR.target.position.set(2, 2, 0);
     scene.add(this.headlightR);
     scene.add(this.headlightR.target);
 
-    scene.add(new THREE.CameraHelper(this.headlightL.shadow.camera));
-    scene.add(new THREE.CameraHelper(this.headlightR.shadow.camera));
+    this.cameraHelperL = new THREE.CameraHelper(this.headlightL.shadow.camera);
+    scene.add(this.cameraHelperL);
+    this.cameraHelperR = new THREE.CameraHelper(this.headlightR.shadow.camera);
+    scene.add(this.cameraHelperR);
 
     const geometry = new THREE.BoxGeometry(10, 0.15, 10);
     const material = new THREE.MeshPhongMaterial({
@@ -159,6 +166,26 @@ class HeadlightsComponent extends Component {
     scene.add(this.flatBlockR);
 
     this.initShadowMapViewers();
+
+    document.body.addEventListener("keydown", (event) => {
+      if (event.key === "l") {
+        this.headlightL.visible = !this.headlightL.visible;
+        this.flatBlockL.visible = !this.flatBlockL.visible;
+      }
+      if (event.key === "r") {
+        this.headlightR.visible = !this.headlightR.visible;
+        this.flatBlockR.visible = !this.flatBlockR.visible;
+      }
+      if (event.key === "c") {
+        camera.position.set(0, 3, 20);
+        camera.lookAt(0, 8, 0);
+      }
+      // remove shadow helpers
+      if (event.key === "h") {
+        this.cameraHelperL.visible = !this.cameraHelperL.visible;
+        this.cameraHelperR.visible = !this.cameraHelperR.visible;
+      }
+    });
   }
 
   Update() {

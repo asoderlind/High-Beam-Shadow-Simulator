@@ -27,7 +27,7 @@ class ThreeJSComponent extends Component {
       1,
       1000
     );
-    this.camera.position.set(0, 15, 35);
+    this.camera.position.set(0, 3.5, 21);
   }
 
   InitEntity() {
@@ -39,12 +39,12 @@ class ThreeJSComponent extends Component {
     this.renderer.shadowMap.type = THREE.BasicShadowMap;
 
     // ambient light
-    const ambientLight = new THREE.AmbientLight(0x404040);
+    const ambientLight = new THREE.AmbientLight(0x505050);
     this.scene.add(ambientLight);
 
     // Mouse control
     const controls = new OrbitControls(this.camera, this.renderer.domElement);
-    controls.target.set(0, 2, 0);
+    controls.target.set(0, 6, 0);
     controls.update();
 
     this.clock = new THREE.Clock();

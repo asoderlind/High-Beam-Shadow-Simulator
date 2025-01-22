@@ -1,8 +1,8 @@
 import { Component } from "../ComponentSystem/Component";
 import GUI from "lil-gui";
-import ThreeJSComponent from "./ThreeJSComponent";
 import BoxComponent from "./BoxComponent";
 import HeadlightsComponent from "./HeadlightsComponent";
+import CarComponent from "./CarComponent";
 
 class GuiComponent extends Component {
   static CLASS_NAME = "GuiComponent";
@@ -13,6 +13,10 @@ class GuiComponent extends Component {
   }
 
   InitEntity() {
+    const car = this.FindEntity("carEntity")?.GetComponent(
+      "CarComponent"
+    ) as CarComponent;
+
     const box = this.FindEntity("objectsEntity")?.GetComponent(
       "BoxComponent"
     ) as BoxComponent;
@@ -22,6 +26,14 @@ class GuiComponent extends Component {
     ) as HeadlightsComponent;
 
     this.gui = new GUI();
+
+    if (car) {
+      const carFolder = this.gui.addFolder("Car");
+      carFolder.open();
+      console.log("🚀 GuiComponent.ts:33 ~ ", car);
+      carFolder.add(car.meshPosition, "x", -20, 20);
+      carFolder.add(car.meshPosition, "z", -100, 100);
+    }
 
     if (box) {
       const boxFolder = this.gui.addFolder("Box");
@@ -93,23 +105,21 @@ class GuiComponent extends Component {
     const screenLFolder = this.gui.addFolder("Screen L");
     screenLFolder.open();
     const screenLPos = screenLFolder.addFolder("Position");
-    screenLPos.add(headlights.flatBlockL.position, "x", -20, 20);
-    screenLPos.add(headlights.flatBlockL.position, "y", -20, 20);
-    screenLPos.add(headlights.flatBlockL.position, "z", -20, 20);
+    screenLPos.add(headlights.flatBlockL.position, "x", -6, 2, 0.01);
+    screenLPos.add(headlights.flatBlockL.position, "y", -6, 12, 0.01);
     const screenLScale = screenLFolder.addFolder("Scale");
-    screenLScale.add(headlights.flatBlockL.scale, "x", 0, 5, 0.1);
-    screenLScale.add(headlights.flatBlockL.scale, "z", 0, 5, 0.1);
+    screenLScale.add(headlights.flatBlockL.scale, "x", 0, 0.4, 0.01);
+    screenLScale.add(headlights.flatBlockL.scale, "z", 0, 0.4, 0.01);
 
     // Screen R
     const screenRFolder = this.gui.addFolder("Screen R");
     screenRFolder.open();
     const screenRPos = screenRFolder.addFolder("Position");
-    screenRPos.add(headlights.flatBlockR.position, "x", -20, 20);
-    screenRPos.add(headlights.flatBlockR.position, "y", -20, 20);
-    screenRPos.add(headlights.flatBlockR.position, "z", -20, 20);
+    screenRPos.add(headlights.flatBlockR.position, "x", -2, 6, 0.01);
+    screenRPos.add(headlights.flatBlockR.position, "y", -2, 6, 0.01);
     const screenRScale = screenRFolder.addFolder("Scale");
-    screenRScale.add(headlights.flatBlockR.scale, "x", 0, 5, 0.1);
-    screenRScale.add(headlights.flatBlockR.scale, "z", 0, 5, 0.1);
+    screenRScale.add(headlights.flatBlockR.scale, "x", 0, 0.4, 0.01);
+    screenRScale.add(headlights.flatBlockR.scale, "z", 0, 0.4, 0.01);
   }
 
   Update() {}

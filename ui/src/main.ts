@@ -1,10 +1,10 @@
 import { EntityManager } from "./ComponentSystem/EntityManager";
 import { Entity } from "./ComponentSystem/Entity";
 import ThreeJSComponent from "./Components/ThreeJSComponent";
-import BoxComponent from "./Components/BoxComponent";
 import GuiComponent from "./Components/GuiComponent";
 import GroundComponent from "./Components/GroundComponent";
 import HeadlightsComponent from "./Components/HeadlightsComponent";
+import CarComponent from "./Components/CarComponent";
 
 // This guy is global and will be connected to ALL entities
 const entityManager = EntityManager.Init();
@@ -37,6 +37,10 @@ function main() {
 
   const lightsEntity = new Entity("lightsEntity");
   lightsEntity.Init();
+
+  const carEntity = new Entity("carEntity");
+  carEntity.AddComponent(new CarComponent());
+  carEntity.Init();
 
   const guiEntity = new Entity("guiEntity");
   guiEntity.AddComponent(new GuiComponent());
